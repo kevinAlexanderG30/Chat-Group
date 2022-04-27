@@ -1,7 +1,8 @@
+from ntpath import join
 import os
 
 from flask import Flask, render_template
-from flask_socketio import SocketIO, emit
+from flask_socketio import SocketIO, emit,join_room
 
 #https://github.com/J-Soma/flask_socketio_ejemplos.git jeffry repository
 app = Flask(__name__)
@@ -25,7 +26,7 @@ def saludar(nombre):
     #Enviar respuesta de evento emit del cliente
     return f'Hola {nombre}'
 
-@socketio.on('validar usuarios')
+@socketio.on('validar_usuarios')
 def nombres_usuarios(nombre):
     entrar = 0
     nombres = nombre
@@ -38,7 +39,7 @@ def nombres_usuarios(nombre):
                 entrar = 1
                 print("Usuario no permitido")
                 dato = (f"Nombre no disponible {nombre}")
-                emit("validar usuarios2", dato)   
+                emit("denegar_user", dato)   
             else:
                 entrar = 0
     if entrar == 0:
@@ -46,4 +47,13 @@ def nombres_usuarios(nombre):
         print(nombre)
         usuario.append(nombre)
         print(nombre)
-        emit("meter usuario", nombre, include_self=True)
+        print(f"{usuario}")
+        emit("meter_usuario", nombre, include_self=True)
+
+@socketio.on('ingresar_sala')
+def saludar(dato):
+    join_room(dato)
+
+
+if __name__ == '__main__':
+    socketio.run(app)

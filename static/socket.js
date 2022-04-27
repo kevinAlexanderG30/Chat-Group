@@ -1,32 +1,39 @@
-socket = io()
+document.addEventListener('DOMContentLoaded', () => {
+    var socket = io.connect(location.protocol+'//' + document.domain + ':' + location.port);
+    socket.on('connect', () => {
 
-// if (!localStorage.getItem('Usuario'))
-//                 localStorage.setItem('Usuario+', 0);
+    document.querySelector("form").onsubmit = () =>
+    {
+        nombre = document.querySelector("#nombre").value 
+        socket.emit("validar_usuarios", nombre)
 
-document.querySelector("form").onsubmit = () =>
-{
-    nombre = document.querySelector("#nombre").value
+        socket.emit("saludar", nombre, (respuesta) => {
+             document.querySelector("#contenido").append(respuesta)
+            document.querySelector("#contenido").innerHTML += ("<br>")
+        })
 
-    socket.emit("validar usuarios", nombre)
+        return false;
+    }
 
-    // socket.emit("saludar", nombre, (respuesta) => {
-    //     document.querySelector("#contenido").append(respuesta)
-    //     document.querySelector("#contenido").innerHTML += ("<br>")
-    // })
+    socket.on("denegar_user",  (dato) => {
+        console.log("Usuario no permitido");
+        alert(dato);
+    })
 
-    return false;
-}
+    socket.on("meter_usuario" , (dato) => {
+        console.log(dato)
+        localStorage.setItem("usuario", dato); 
+        
+        socket.emit("ingresar_sala", (dato) => { 
+           document.getElementById("registroUsuario").style.display = "none";
+        })
+    })
 
-socket.on("validar usuarios2", (dato) => {
-    alert(dato);
-})
+    socket.on("mensaje", (dato) => {
+        document.querySelector("#contenido").append(dato)
+        document.querySelector("#contenido").innerHTML += ("<br>")
+    })
 
-socket.on("meter usuario", (dato) => {
-    console.log(dato)
-    localStorage.setItem("Usuario", dato); 
-})
+});
 
-socket.on("mensaje", (dato) => {
-    document.querySelector("#contenido").append(dato)
-    document.querySelector("#contenido").innerHTML += ("<br>")
-})
+});
