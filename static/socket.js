@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log(dato)
         localStorage.setItem("usuario", dato); 
         
-        socket.emit("ingresar_sala", (dato) => { 
+        socket.emit("ingresar_sala",  dato, (dato) => { 
            document.getElementById("registroUsuario").style.display = "none";
         })
     })

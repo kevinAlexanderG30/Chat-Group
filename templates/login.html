@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+
+{% block titulo %}
+Login
+{% endblock titulo %}
+
+{% block body %}
+<div id="registroUsuario">
+    <form action="/login" method="POST">
+        <div class="align-items-center">
+            <div class="form-group col-sm-3 my-1 ">
+            <label for="exampleInputEmail1 nombre">Usuario</label>
+            <input name="nombre" id="nombre" type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </form>
+</div>
+{% endblock body %}
