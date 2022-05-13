@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+
+{% block title %}
+   Channels
+{% endblock %}
+
+{% block body %}
+<h3>Canal actual {{canal}}</h3>
+<input type="text"  id="nombre_canal">
+<button  id="crearCanal" type="submit" onclick="canal()">Crear</button>
+
+<script>
+   function canal() {
+      var p = document.createElement("p");
+      var div = document.createElement("div");
+      div.appendChild(p);
+      let item_canales = document.querySelector("#item-canales");
+      item_canales.append(document.querySelector("#nombre_canal").value); 
+      item_canales.append(div);
+   }
+</script>
+
+<a href="/logout">Salir</a>
+
+<h2>Lista de canales</h2>
+
+<ul>
+   <div id="item-canales" class="container">
+      {%for canales in lista_canales%}
+      <div id="{{canales}}" class="container"></div>
+         <li></li><a class="nav-link highlight" id="entrar_sala" name="{{canales}}" >{{canales}}</a>
+      </div>
+      {%endfor%}
+   </div>
+</ul>
+
+
+{% endblock%}
