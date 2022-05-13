@@ -1,9 +1,21 @@
 {% extends "layout.html" %}
 
-{% block titulo %}
-Inicio
-{% endblock titulo %}
+{% block title %}
+   Channels
+{% endblock %}
 
 {% block body %}
-Holaaaaa
-{% endblock body %}
+<h3>Canal actual {{canal}}</h3>
+<input type="text"  id="nombre_canal">
+<button  id="crearCanal" type="submit">Crear</button>
+
+<a href="/logout">Salir</a>
+
+<h2>Lista de canales</h2>
+
+{%for canales in lista_canales%}
+   <a class="nav-link highlight" id="entrar_sala" name="{{canales}}" >{{canales}}</a>
+   
+{%endfor%}
+
+{% endblock%}

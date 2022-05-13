@@ -1,39 +1,51 @@
+const sendForm = (route, object) => {
+
+    // crear el formulario
+    let form = document.createElement('form');
+    form.setAttribute("method", "post");
+    form.setAttribute("action", route);
+
+    // extraer el valor del objeto
+    let input = document.createElement('input');
+    input.setAttribute("type", "hidden");
+    let key = Object.keys(object)[0];
+    input.setAttribute("name", key);
+    input.setAttribute("value", object[key]);
+    form.appendChild(input);
+
+    // enviar al servidor
+    document.body.appendChild(form);
+    form.submit();
+};
+
 document.addEventListener('DOMContentLoaded', () => {
+    
+    document.querySelector("#crearCanal").addEventListener('click', () => {
+
+        let entrada = document.querySelector("#nombre_canal");
+        let nuevo_nombre = entrada.value;
+
+        if (nuevo_nombre.length === 0) {
+            error_message(entrada, "Enter new channel name");
+        }
+
+        else {
+            sendForm("/createCanal", {"name": nuevo_nombre});
+            
+        }
+    });
+    
+
     var socket = io.connect(location.protocol+'//' + document.domain + ':' + location.port);
     socket.on('connect', () => {
-
-    document.querySelector("form").onsubmit = () =>
-    {
-        nombre = document.querySelector("#nombre").value 
-        socket.emit("validar_usuarios", nombre)
-
-        socket.emit("saludar", nombre, (respuesta) => {
-             document.querySelector("#contenido").append(respuesta)
-            document.querySelector("#contenido").innerHTML += ("<br>")
-        })
-
-        return false;
-    }
-
-    socket.on("denegar_user",  (dato) => {
-        console.log("Usuario no permitido");
-        alert(dato);
-    })
-
-    socket.on("meter_usuario" , (dato) => {
-        console.log(dato)
-        localStorage.setItem("usuario", dato); 
         
-        socket.emit("ingresar_sala",  dato, (dato) => { 
-           document.getElementById("registroUsuario").style.display = "none";
-        })
-    })
+        document.querySelector("#crearCanal").addEventListener('click', () => {
 
-    socket.on("mensaje", (dato) => {
-        document.querySelector("#contenido").append(dato)
-        document.querySelector("#contenido").innerHTML += ("<br>")
-    })
+        
+        });
 
-});
+
+
+    });
 
 });

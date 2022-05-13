@@ -1,11 +1,32 @@
 {% extends "layout.html" %}
 
-{% block titulo %}
-Login
-{% endblock titulo %}
+{% block title %}
+   Login
+{% endblock %}
 
 {% block body %}
-<div id="registroUsuario">
+<body class="bg-light">
+    <nav class="navbar navbar-expand-md navbar-light bg-white border">
+        <a class="navbar-brand" href="/"><span class="myBlue">W</span><span class="myPink">e</span><span class="myYellow">b</span><span class="myGreen">50</span> <span class="black">Flack</span></a>
+        <button aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-target="#navbar" data-toggle="collapse" type="button">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </nav>
+    <main class="container p-5">
+        <div class="card">
+            <div class="card-body">
+                <h2 class="card-title">Sign into Flack</h2>
+                <form action="/login" method="post">
+                    <div class="form-group">
+                        <input autocomplete="off" autofocus class="form-control index-input" name="name" placeholder="Display name" type="text"/>
+                    </div>
+                    <button class="btn btn-primary" type="submit">Continue</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+<!-- <div id="registroUsuario">
     <form action="/login" method="POST">
         <div class="align-items-center">
             <div class="form-group col-sm-3 my-1 ">
@@ -15,5 +36,5 @@ Login
             <button type="submit" class="btn btn-primary">Submit</button>
         </div>
     </form>
-</div>
+</div> -->
 {% endblock body %}

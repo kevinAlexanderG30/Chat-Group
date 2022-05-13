@@ -4,12 +4,13 @@ from flask_session import Session
 from flask_socketio import SocketIO, emit,join_room
 from functools import wraps
 
+
 #https://github.com/J-Soma/flask_socketio_ejemplos.git jeffry repository
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 socketio = SocketIO(app)
 
-usuario = []
+canales = { "Publico": []}
 
 @app.after_request
 def after_request(response):
@@ -36,23 +37,51 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
-
 @app.route("/")
 @login_required
 def index():
-    return render_template("index.html")
+    lista_canales = canales
+    canal = session["canales_actuales"]
+    print(canales)
+    return render_template("index.html", canal=canal,lista_canales=lista_canales)
 
-@app.route("/login",methods=["GET", "POST"])
+@app.route("/createCanal", methods=["POST"])
+def createCanal():
+    nuevo_canal = request.form.get("name")
+    print(f"{nuevo_canal}, canal nuevo")
+    if not nuevo_canal:
+        return redirect("/")
+
+    #Lista Mensajes
+    lista = []
+
+    #Añadir los mensajes en los canales  
+    canales[nuevo_canal] = lista
+
+    session["canales_actuales"] = nuevo_canal
+
+    return redirect("/")
+    
+
+
+@app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "GET": 
-        return render_template("login.html")
-    else: 
-        user = request.form.get("nombre").strip()
-        session["user_id"] = user
-        print("buenas")
-        print(session["user_id"])
-        return redirect("/")
-    
+
+         return render_template("login.html")
+
+    else:
+
+        # Almacenar el nombre para mostrar a través de la sesión
+        session["user_id"] = request.form.get("name")
+
+        if not canales:
+            session["canales_actuales"] = "No hay canales Disponibles"
+        else:
+            session["canales_actuales"] = list(canales.keys())[0]
+
+        # Redirect to channel
+        return redirect("/")    
 
 @app.route("/logout")
 def logout():
@@ -63,45 +92,6 @@ def logout():
 
     # Redirect user to login form
     return redirect("/login")
-
-# Al recibir el evento saludar
-@socketio.on('saludar')
-def saludar(nombre):
-    print(f'Hola {nombre}')
-
-    #Emitir solo al usuario que origino este evento
-    emit("mensaje", f'Hola {nombre}')
-
-    #Enviar respuesta de evento emit del cliente
-    return f'Hola {nombre}'
-
-@socketio.on('validar_usuarios')
-def nombres_usuarios(nombre):
-    entrar = 0
-    nombres = nombre
-    print(f'{nombres}')
-    if nombre == "":
-        pass
-    else: 
-        for usuarios in usuario:
-            if usuarios == nombre:
-                entrar = 1
-                print("Usuario no permitido")
-                dato = (f"Nombre no disponible {nombre}")
-                emit("denegar_user", dato)   
-            else:
-                entrar = 0
-    if entrar == 0:
-        print("Meter Usuario")
-        print(nombre)
-        usuario.append(nombre)
-        print(nombre)
-        print(f"{usuario}")
-        emit("meter_usuario", nombre, include_self=True)
-
-@socketio.on('ingresar_sala')
-def ingresarSala(dato):
-    join_room(dato)
 
 
 if __name__ == '__main__':
