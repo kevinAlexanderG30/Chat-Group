@@ -5,17 +5,40 @@
 {% endblock %}
 
 {% block body %}
-<h3>Canal actual {{canal}}</h3>
+<h3>indicador</h3>
+<div id="sidebar-header">
+   <span class="navbar-brand" id="actual_canal">{{ canal_actual }}</span>
+</div>
+
+
+<h3 id="actual_canal">Canal actual {{canal}}</h3>
 <input type="text"  id="nombre_canal">
 <button  id="crearCanal" type="submit">Crear</button>
 
+
 <a href="/logout">Salir</a>
+<hr>
+<h3>Enviar mensajes</h3>
+<input type="text" id="mensaje">
+<button id="enviar_mensaje" type="submit">Enviar</button>
+
+
+<div id="contenido-mensaje">
+   <ul id="msg">
+
+   </ul>
+</div>
+
 
 <h2>Lista de canales</h2>
 
-{%for canales in lista_canales%}
-   <a class="nav-link highlight" id="entrar_sala" name="{{canales}}" >{{canales}}</a>
-   
-{%endfor%}
+<ul>
+   <div id="item-canales" class="container">  
+   {%for canales in lista_canales%}   
+      <li class="room" value="{{canales}}" id="item-li">{{canales}}</li>
+      {%endfor%}
+   </div>
+</ul>
+
 
 {% endblock%}

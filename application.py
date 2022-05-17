@@ -1,7 +1,7 @@
 import os
-from flask import Flask, redirect, render_template, request, session
+from flask import Flask, jsonify, redirect, render_template, request, session
 from flask_session import Session
-from flask_socketio import SocketIO, emit,join_room
+from flask_socketio import SocketIO, emit,join_room, leave_room
 from functools import wraps
 
 
@@ -41,9 +41,9 @@ def login_required(f):
 @login_required
 def index():
     lista_canales = canales
-    canal = session["canales_actuales"]
+    canal_actual = session["canales_actuales"]
     print(canales)
-    return render_template("index.html", canal=canal,lista_canales=lista_canales)
+    return render_template("index.html", canal_actual=canal_actual,lista_canales=lista_canales)
 
 @app.route("/createCanal", methods=["POST"])
 def createCanal():
@@ -93,6 +93,52 @@ def logout():
     # Redirect user to login form
     return redirect("/login")
 
+@socketio.on('nuevo__canal')
+def nuevo_canal(nombre):
+
+    channel = nombre
+
+    if not channel:
+        return redirect("/")
+
+    #Lista Mensajes
+    lista = []
+
+    #Añadir los mensajes en los canales  
+    canales[channel] = lista
+    print()
+    print(canales[channel])
+
+    session["canales_actuales"] = channel
+
+    emit('addhtml', nombre, broadcast=True)
+
+@socketio.on("submit message")
+def newMessage(data):
+    """ Broadcast the send message event to all user whenever a new message is submitted """
+    print(data)
+    # Retrieve current channel from session
+    channel = data["channel"]
+
+    # Store message into current channels storage (pop oldest message if over 100)
+    message = data["message"]
+    
+    canales[channel].append(message)
+    print(canales[channel])
+    # Retrieve number of messages
+    size = len(canales[channel])
+    # Broadcast the new message to the channel for everyone to see
+    emit("announce message", {"channel": channel, "message": message, "size": size}, broadcast=True)
+
+@socketio.on("change_room")
+def change_room(data):
+    print("Change room")
+    print(canales[data])
+    room = session["canales_actuales"]
+    leave_room(room)
+    room = data
+    join_room(room)
+    
 
 if __name__ == '__main__':
     socketio.run(app)
