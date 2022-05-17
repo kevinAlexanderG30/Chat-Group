@@ -49,12 +49,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 const text = textbox.value;
                 const timestamp = new Date().toString().substring(0, 15);
 
-                // emit message event to server with data
+                // emit mensaje al server
                 socket.emit('submit message', {'channel': channel, 'message':{'name': name, 'text': text, 'timestamp': timestamp}});
                 textbox.value = "";
             }
         };
         
+        // Crear las salas al html
         socket.on("addhtml", (dato) => {
             let item_canales = document.querySelector("#item-canales");
             var li = document.createElement("li");
@@ -65,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log(item_canales) 
         });
 
-        socket.on('announce message', data => {
+        socket.on('anunciar mensaje', data => {
 
             // display the new message on page if user is on the same page
             if (document.querySelector("#actual_canal").textContent === data.channel) {
@@ -80,6 +81,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
           
         });
+
+        socket.on("CargarMensaje", data => { 
+            console.log(data);
+            
+            
+           
+            
+            
+                
+            for (let index = 0; index < data.length; index++) {                
+                  var mensaj = (data[index]["text"]);
+                  var item_mensaje = document.querySelector("#contenido-mensaje");
+                  var ul_mensaje = document.querySelector("#msg");
+                  var li_mensaje = document.createElement("li");
+                  li_mensaje.append(mensaj);
+                  ul_mensaje.append(li_mensaje);
+                  item_mensaje.append(ul_mensaje);
+
+                   
+                }
+        });
+
+
 
     });
 

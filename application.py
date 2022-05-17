@@ -128,16 +128,18 @@ def newMessage(data):
     # Retrieve number of messages
     size = len(canales[channel])
     # Broadcast the new message to the channel for everyone to see
-    emit("announce message", {"channel": channel, "message": message, "size": size}, broadcast=True)
+    emit("anunciar mensaje", {"channel": channel, "message": message, "size": size}, broadcast=True)
 
 @socketio.on("change_room")
 def change_room(data):
     print("Change room")
+    Mensajes = canales[data]
     print(canales[data])
     room = session["canales_actuales"]
     leave_room(room)
     room = data
     join_room(room)
+    emit("CargarMensaje", Mensajes , broadcast=False)
     
 
 if __name__ == '__main__':
