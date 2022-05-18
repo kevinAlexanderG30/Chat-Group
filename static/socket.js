@@ -1,20 +1,29 @@
 
-
 document.addEventListener('DOMContentLoaded', () => {
-    
+
     var socket = io.connect(location.protocol+'//' + document.domain + ':' + location.port);
     socket.on('connect', () => {
+        // Cargar el inicio donde el usuario dejo anteriormente 
+        var Room = localStorage.getItem('Room');
+        console.log(Room);
+        socket.emit("change_room", Room);
+        document.getElementById('actual_canal').innerHTML =  Room;
+
 
         document.querySelectorAll('.room').forEach(function(element){
             element.addEventListener('click',function() {
                 var room_name = element.textContent;
                 document.getElementById('actual_canal').innerHTML =  room_name;
                 socket.emit('change_room',room_name);
+                localStorage.setItem('Room', "Publico");
                 
                 
             })
         });
 
+        document.querySelector("#SalirLocal").addEventListener("click", () => {
+            localStorage.removeItem("Room");
+        });
 
 
         document.querySelector("#crearCanal").addEventListener('click', () => {
@@ -63,7 +72,18 @@ document.addEventListener('DOMContentLoaded', () => {
             li.className = "room";
             li.append(name);
             item_canales.append(li);   
-            console.log(item_canales) 
+            console.log(item_canales)
+            // cambiar room
+            document.querySelectorAll('.room').forEach(function(element){
+                element.addEventListener('click',function() {
+                    var room_name = element.textContent;
+                    document.getElementById('actual_canal').innerHTML =  room_name;
+                    socket.emit('change_room',room_name);
+                    localStorage.setItem('Room', room_name);
+                    
+                    
+                })
+            }); 
         });
 
         socket.on('anunciar mensaje', data => {
@@ -74,6 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 var item_mensaje = document.querySelector("#contenido-mensaje");
                 var ul_mensaje = document.querySelector("#msg");
                 var li_mensaje = document.createElement("li");
+                li_mensaje.setAttribute("id", "item-mensajes");
                 li_mensaje.append(mensaj);
                 ul_mensaje.append(li_mensaje);
                 item_mensaje.append(ul_mensaje);
@@ -84,10 +105,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         socket.on("CargarMensaje", data => { 
             console.log(data);
-            
-            
-           
-            
+            document.querySelectorAll("#msg").forEach(function(element){ 
+                    var mensjaecambiar =element.textContent ="";
+                    document.getElementById('msg').textContent =  mensjaecambiar;
+            });
             
                 
             for (let index = 0; index < data.length; index++) {                
