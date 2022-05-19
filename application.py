@@ -42,8 +42,9 @@ def login_required(f):
 def index():
     lista_canales = canales
     canal_actual = session["canales_actuales"]
+    user_actual = session["user_id"]
     print(canales)
-    return render_template("index.html", canal_actual=canal_actual,lista_canales=lista_canales)
+    return render_template("index.html", canal_actual=canal_actual,lista_canales=lista_canales,user_actual=user_actual)
 
 @app.route("/createCanal", methods=["POST"])
 def createCanal():
@@ -116,12 +117,14 @@ def nuevo_canal(nombre):
 @socketio.on("submit message")
 def newMessage(data):
     """ Broadcast the send message event to all user whenever a new message is submitted """
-    print(data)
+    #print(data)
     # Retrieve current channel from session
     channel = data["channel"]
 
     # Store message into current channels storage (pop oldest message if over 100)
     message = data["message"]
+    if len(canales[channel]) == 100:
+        canales[channel].pop(0)
     
     canales[channel].append(message)
     print(canales[channel])
