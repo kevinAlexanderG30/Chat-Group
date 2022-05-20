@@ -12,6 +12,8 @@ socketio = SocketIO(app)
 
 canales = { "Publico": []}
 
+
+
 @app.after_request
 def after_request(response):
     response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
@@ -96,23 +98,31 @@ def logout():
 
 @socketio.on('nuevo__canal')
 def nuevo_canal(nombre):
-
+    parte = 1
     channel = nombre
+    for canal in canales:
+        if nombre == canal:
+            parte = 0
+            break
+    
+    if parte == 1:
+        if not channel:
+            return redirect("/")
 
-    if not channel:
-        return redirect("/")
+        #Lista Mensajes
+        lista = []
 
-    #Lista Mensajes
-    lista = []
+        #Añadir los mensajes en los canales  
+        canales[channel] = lista
+        print()
+        print(canales[channel])
 
-    #Añadir los mensajes en los canales  
-    canales[channel] = lista
-    print()
-    print(canales[channel])
+        session["canales_actuales"] = channel
 
-    session["canales_actuales"] = channel
-
-    emit('addhtml', nombre, broadcast=True)
+        emit('addhtml', nombre, broadcast=True)
+    else:
+        Novalido = f"{nombre}"
+        emit("CanalNo",Novalido,broadcast=False)
 
 @socketio.on("submit message")
 def newMessage(data):
@@ -143,7 +153,6 @@ def change_room(data):
     room = data
     join_room(room)
     emit("CargarMensaje", Mensajes , broadcast=False)
-    
 
 if __name__ == '__main__':
     socketio.run(app)

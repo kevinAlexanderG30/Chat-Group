@@ -59,22 +59,20 @@ document.addEventListener('DOMContentLoaded', () => {
             target.appendChild(option);
         }
 
+        //Seleccion de emoji
+            document.querySelector("#target").value= "";
         
-        for(var index = 0; index < emojiCount; index++)
-        {
-            console.log(emoji[index])
-
-            document.querySelector("😀").addEventListener("click", () => {
-                var emoji = document.querySelector("😀").value;
-                var mensaje = document.querySelector("#mensaje").value;
-                document.querySelector("#mensaje").value =  mensaje + emoji;
+            document.querySelector("#target").addEventListener("click", () => {
                 
-    
+                    var emoji = document.querySelector("#target").value
+                    console.log(emoji);
+                    var mensaje = document.querySelector("#mensaje").value;
+                    document.querySelector("#mensaje").value =  mensaje + emoji; 
+                    emoji = document.querySelector("#target").value = ""   
+                    console.log(emoji);
+ 
             });            
-            
-        }
-
-
+               
 
         document.querySelector("#enviar_mensaje").onclick = () => {
             const channel = document.querySelector("#actual_canal").textContent;
@@ -109,6 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Crear las salas al html
         socket.on("addhtml", (dato) => {
             let item_canales = document.querySelector("#item-canales");
+            //console.log(item_canales);
             var li = document.createElement("li");
             var name = dato;
             li.className = "room";
