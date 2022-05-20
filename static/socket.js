@@ -41,6 +41,41 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
+        var target = document.getElementById("target");
+        var emojiCount = emoji.length;
+
+        for(var index = 0; index < emojiCount; index++)
+        {
+            addEmoji(emoji[index]);
+
+        }
+
+        function addEmoji(code)
+        {
+            var option = document.createElement('option');
+            option.setAttribute("id", code);
+            option.value = code
+            option.innerHTML =  code;
+            target.appendChild(option);
+        }
+
+        
+        for(var index = 0; index < emojiCount; index++)
+        {
+            console.log(emoji[index])
+
+            document.querySelector("😀").addEventListener("click", () => {
+                var emoji = document.querySelector("😀").value;
+                var mensaje = document.querySelector("#mensaje").value;
+                document.querySelector("#mensaje").value =  mensaje + emoji;
+                
+    
+            });            
+            
+        }
+
+
+
         document.querySelector("#enviar_mensaje").onclick = () => {
             const channel = document.querySelector("#actual_canal").textContent;
             const textbox = document.querySelector("#mensaje");
