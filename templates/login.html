@@ -6,29 +6,35 @@
 
 {% block body %}
 <body class="bg-light">
-
-    <main class="container p-5">
-        <div class="card">
-            <div class="card-body">
-                <form action="/login" method="post">
-                    <div class="form-group">
-                        <input autocomplete="off" autofocus class="form-control index-input" name="name" placeholder="Display name" type="text"/>
-                    </div>
-                    <button class="btn btn-primary" id="login1" type="submit">Continue</button>
-                </form>
-            </div>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#">Chat Flack: Es hora de socializar.</a>        
         </div>
-    </main>
+      </nav>
 
-<!-- <div id="registroUsuario">
-    <form action="/login" method="POST">
-        <div class="align-items-center">
-            <div class="form-group col-sm-3 my-1 ">
-            <label for="exampleInputEmail1 nombre">Usuario</label>
-            <input name="nombre" id="nombre" type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-6 offset-md-3">
+            <h2 class="text-center text-dark mt-5">Login Flack</h2>
+            <div class="card my-5">
+    
+              <form class="card-body cardbody-color p-lg-5" action="/login" method="post">
+    
+                <div class="text-center">
+                  <img src="https://code-fu.net.ni/wp-content/uploads/2016/09/Code-FU.svg"
+                    width="200px" alt="profile">
+                </div>
+    
+                <div class="mb-3">
+                  <input type="text" autocomplete="off" autofocus class="form-control" id="Username"  name="name" aria-describedby="emailHelp"
+                    placeholder="User Name">
+                </div>
+                <div class="text-center"><button class="btn btn-primary" id="login1" type="submit" class="btn btn-color px-5 mb-5 w-100">Login</button></div>
+              </form>
             </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
+    
+          </div>
         </div>
-    </form>
-</div> -->
+      </div>
+
 {% endblock body %}

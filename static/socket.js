@@ -27,7 +27,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         document.querySelector("#SalirLocal").addEventListener("click", () => {
+            nombre_Usuario2 =  localStorage.getItem('username1');
+            localStorage.removeItem("username1");
             localStorage.removeItem("Room");
+            socket.emit("eliminar_usuario", nombre_Usuario2);
         });
 
 
@@ -150,9 +153,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (document.querySelector("#actual_canal").textContent === data.channel) {
                 if (data["message"]["name"] == nameLocal) {
                     
-                    var mensaj = (data["message"]["text"]);
+                    var name = data["message"]["name"]
+                    var mensaje2 = (data["message"]["text"]);
                     var timestamp = data["message"]["timestamp"]
-                    console.log(timestamp);
+                    var mensaj = name +": " + mensaje2 
+                    //console.log(timestamp);
                     var item_mensaje = document.querySelector(".chat-box");
                     var ul = document.querySelector("#msg");
                     var div_primario =  document.createElement("li");
@@ -168,9 +173,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     
                 }
                 else {
-                    var mensaj = (data["message"]["text"]);
+                    var name = data["message"]["name"]
+                    var mensaje2 = (data["message"]["text"]);
                     var timestamp = data["message"]["timestamp"]
-                    console.log(timestamp);
+                    var mensaj = name +": " + mensaje2 
+                    //console.log(timestamp);
                     var item_mensaje = document.querySelector(".chat-box");
                     var ul = document.querySelector("#msg");
                     var div_primario =  document.createElement("li");
@@ -190,25 +197,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
                  
         });
-        socket.on("CanalNo", data => {
-            alert(data);
-        })
-
+        
         socket.on("CargarMensaje", data => { 
             console.log(data);
             // elimina los mensajes antiguos de la pagina
             document.querySelectorAll("#msg").forEach(function(element){ 
                 var cambiarMensaje = element.textContent ="";
                 document.getElementById('msg').textContent =  cambiarMensaje;
-        });
-            
-                var name = localStorage.getItem('username1');
+            });
+            nombre_user = document.querySelector("#actual_user").textContent
+        
             for (let index = 0; index < data.length; index++) { 
-                
-                if (data[index]["name"] == name ) {
-                    var mensaj = (data[index]["text"]);
+                    console.log(data[index]["name"]);
+                if (data[index]["name"] == nombre_user ) {
+                    var name = data[index]["name"]
+                    var mensaje2 = data[index]["text"];
                     var timestamp = data[index]["timestamp"]
-                    console.log(timestamp);
+                    var mensaj = name +": " + mensaje2 
+                    //console.log(timestamp);
                     var item_mensaje = document.querySelector(".chat-box");
                     var div_primario =  document.createElement("li");
                     var div_secundario = document.createElement("li");
@@ -225,9 +231,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 else{
-                    var mensaj = (data[index]["text"]);
+                    var name = data[index]["name"]
+                    var mensaje2 = (data[index]["text"]);
                     var timestamp = data[index]["timestamp"]
-                    console.log(timestamp);
+                    var mensaj = name +": " + mensaje2 
+                    //console.log(timestamp);
                     var item_mensaje = document.querySelector(".chat-box");
                     var div_primario =  document.createElement("li");
                     var div_secundario = document.createElement("li");
@@ -241,15 +249,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     ul_item.appendChild(div_primario)
                     item_mensaje.append(ul_item);
                 }
+                  
+            }
                 
-            
-       
-                }
         });
 
-        socket.on("UsuarioNo", data, data => {
+        socket.on("Canal_Novalido", data => {
             alert(data);
-        } )
+        })
 
 
     });

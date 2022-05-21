@@ -1,4 +1,5 @@
 import os
+from unicodedata import name
 from flask import Flask, jsonify, redirect, render_template, request, session
 from flask_session import Session
 from flask_socketio import SocketIO, emit,join_room, leave_room
@@ -11,6 +12,7 @@ app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 socketio = SocketIO(app)
 
 canales = { "Publico": []}
+user = []
 
 @app.after_request
 def after_request(response):
@@ -74,15 +76,32 @@ def login():
     else:
 
         # Almacenar el nombre para mostrar a través de la sesión
-        session["user_id"] = request.form.get("name")
+        name = request.form.get("name")
+        salida = 1
+        for usuario in user:
+            if usuario == name:
+                enviar = (f"usuario ya registrado {name}")
+                salida = 0
+        
+        for canal in canales:
+            if canal == name:
+                enviar = (f"Este nombre es un canal usado {name}")
+                salida = 0
+        
+        if salida == 1:
+            user.append(name)
+            session["user_id"] = name
 
-        if not canales:
-            session["canales_actuales"] = "No hay canales Disponibles"
+            if not canales:
+                session["canales_actuales"] = "No hay canales Disponibles"
+            else:
+                session["canales_actuales"] = list(canales.keys())[0]
+
+            # Redirect to channel
+            return redirect("/")   
         else:
-            session["canales_actuales"] = list(canales.keys())[0]
-
-        # Redirect to channel
-        return redirect("/")    
+            return render_template("login.html")
+            
 
 @app.route("/logout")
 def logout():
@@ -96,23 +115,41 @@ def logout():
 
 @socketio.on('nuevo__canal')
 def nuevo_canal(nombre):
-
+    print("Nombre entro")
+    salida = 1
     channel = nombre
 
     if not channel:
         return redirect("/")
+    print(canales)
+    print(channel)
+    for canal in canales:
+        print(canal)
+        if canal == channel:
+            salida = 0
+            No_valido = f"Nombre de canal {channel} no disponible"
+            break
+    for usuario in user:
+        if usuario == channel:
+            salida = 0
+            No_valido = f"Nombre usado como usuario {channel} no disponible"
+            break
+    if salida == 1:
 
-    #Lista Mensajes
-    lista = []
+        #Lista Mensajes
+        lista = []
 
-    #Añadir los mensajes en los canales  
-    canales[channel] = lista
-    print()
-    print(canales[channel])
+        #Añadir los mensajes en los canales  
+        canales[channel] = lista
+        print()
+        print(canales[channel])
 
-    session["canales_actuales"] = channel
+        session["canales_actuales"] = channel
 
-    emit('addhtml', nombre, broadcast=True)
+        emit('addhtml', nombre, broadcast=True)
+    else:
+       
+        emit("Canal_Novalido",No_valido,broadcast=False)
 
 @socketio.on("submit message")
 def newMessage(data):
@@ -143,7 +180,15 @@ def change_room(data):
     room = data
     join_room(room)
     emit("CargarMensaje", Mensajes , broadcast=False)
-    
+
+@socketio.on("eliminar_usuario")
+def eliminar_usuario(data):
+    print(user)
+    for use in user:
+        if use == data:
+            user.remove(data)
+    print(user)
+
 
 if __name__ == '__main__':
     socketio.run(app)
