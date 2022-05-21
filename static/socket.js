@@ -3,6 +3,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     var socket = io.connect(location.protocol+'//' + document.domain + ':' + location.port);
     socket.on('connect', () => {
+
+        var myModal = document.getElementById('myModal')
+        var myInput = document.getElementById('myInput')
+        nombre_Usuario= document.querySelector("#actual_user").textContent
+        localStorage.setItem('username1', nombre_Usuario);
         // Cargar el inicio donde el usuario dejo anteriormente 
         var Room = localStorage.getItem('Room');
         console.log(Room);
@@ -72,23 +77,22 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.log(emoji);
  
             });            
-               
+        
 
         document.querySelector("#enviar_mensaje").onclick = () => {
             const channel = document.querySelector("#actual_canal").textContent;
             const textbox = document.querySelector("#mensaje");
             
-            
+            if (channel === "") {
+                alert("No esta en un canal");
+                textbox.placeholder = "Entre a un canal";
+                 textbox.value = "";
+             }
             // const current = document.querySelector("#enviar_mensaje").textContent;
             if (textbox.value === "" ) {
                     //console.log("entro");
                     textbox.placeholder = "Escriba antes de enviar";
                     textbox.value = "";              
-            }
-            if (channel === "") {
-               alert("No esta en un canal");
-               textbox.placeholder = "Entre a un canal";
-                textbox.value = "";
             }
             // if the requirements are satisfied,
             else {
@@ -107,13 +111,16 @@ document.addEventListener('DOMContentLoaded', () => {
         // Crear las salas al html
         socket.on("addhtml", (dato) => {
             let item_canales = document.querySelector("#item-canales");
+
             //console.log(item_canales);
             var li = document.createElement("li");
             var name = dato;
             li.className = "room";
+            li.classList.add("dropdown-item");
+            li.setAttribute("id", "item-li");
             li.append(name);
             item_canales.append(li);   
-            console.log(item_canales)
+            console.log(item_canales);
             // cambiar room
 
             document.querySelectorAll('.room').forEach(function(element){
@@ -130,51 +137,119 @@ document.addEventListener('DOMContentLoaded', () => {
 
         socket.on('anunciar mensaje', data => {
             //elimina el primer elemento de la lista de mensajes
-            console.log(data["size"])
+            
+            console.log(data);
             if (data["size"] === 100 ) {
                 const list = document.getElementById("msg");
                 list.removeChild(list.querySelector("li"));   
             }
-            
-           
+            var nameLocal = localStorage.getItem('username1');
+           console.log(document.querySelector("#actual_canal").textContent);
+           console.log( "Hola mundo");
             // Dispara el mensaje enviado a la pagina
             if (document.querySelector("#actual_canal").textContent === data.channel) {
-                var mensaj = (data["message"]["text"]);
-                var item_mensaje = document.querySelector("#contenido-mensaje");
-                var ul_mensaje = document.querySelector("#msg");
-                var li_mensaje = document.createElement("li");
-                li_mensaje.setAttribute("id", "item-mensajes");
-                li_mensaje.append(mensaj);
-                ul_mensaje.append(li_mensaje);
-                item_mensaje.append(ul_mensaje);
+                if (data["message"]["name"] == nameLocal) {
+                    
+                    var mensaj = (data["message"]["text"]);
+                    var timestamp = data["message"]["timestamp"]
+                    console.log(timestamp);
+                    var item_mensaje = document.querySelector(".chat-box");
+                    var ul = document.querySelector("#msg");
+                    var div_primario =  document.createElement("li");
+                    var div_secundario = document.createElement("li");
+                    div_primario.classList.add("message");
+                    div_primario.classList.add("primary")
+                    div_secundario.classList.add("timestamp");
+                    div_primario.append(mensaj);
+                    div_secundario.append(timestamp);
+                    div_primario.appendChild(div_secundario);
+                    ul.appendChild(div_primario);
+                    item_mensaje.append(ul);
+                    
+                }
+                else {
+                    var mensaj = (data["message"]["text"]);
+                    var timestamp = data["message"]["timestamp"]
+                    console.log(timestamp);
+                    var item_mensaje = document.querySelector(".chat-box");
+                    var ul = document.querySelector("#msg");
+                    var div_primario =  document.createElement("li");
+                    var div_secundario = document.createElement("li");
+                    div_primario.classList.add("message");
+                    div_primario.classList.add("secondary")
+                    div_secundario.classList.add("timestamp");
+                    div_primario.append(mensaj);
+                    div_secundario.append(timestamp);
+                    div_primario.appendChild(div_secundario);
+                    ul.appendChild(div_primario);
+                    item_mensaje.append(ul);
+                }
+                
+                
             }
 
                  
         });
+        socket.on("CanalNo", data => {
+            alert(data);
+        })
 
         socket.on("CargarMensaje", data => { 
             console.log(data);
             // elimina los mensajes antiguos de la pagina
             document.querySelectorAll("#msg").forEach(function(element){ 
-                    var cambiarMensaje = element.textContent ="";
-                    document.getElementById('msg').textContent =  cambiarMensaje;
-            });
+                var cambiarMensaje = element.textContent ="";
+                document.getElementById('msg').textContent =  cambiarMensaje;
+        });
             
+                var name = localStorage.getItem('username1');
+            for (let index = 0; index < data.length; index++) { 
                 
-            for (let index = 0; index < data.length; index++) {                
-                  var mensaj = (data[index]["text"]);
-                  var item_mensaje = document.querySelector("#contenido-mensaje");
-                  var ul_mensaje = document.querySelector("#msg");
-                  var li_mensaje = document.createElement("li");
-                  li_mensaje.setAttribute("id", "item-mensajes");
-                  li_mensaje.append(mensaj);
-                  ul_mensaje.append(li_mensaje);
-                  item_mensaje.append(ul_mensaje);
+                if (data[index]["name"] == name ) {
+                    var mensaj = (data[index]["text"]);
+                    var timestamp = data[index]["timestamp"]
+                    console.log(timestamp);
+                    var item_mensaje = document.querySelector(".chat-box");
+                    var div_primario =  document.createElement("li");
+                    var div_secundario = document.createElement("li");
+                    var ul_item =  document.querySelector("#msg")
+                    div_primario.classList.add("message");
+                    div_primario.classList.add("primary")
+                    div_secundario.classList.add("timestamp");
+                    div_primario.append(mensaj);
+                    div_secundario.append(timestamp);
+                    div_primario.appendChild(div_secundario);
+                    ul_item.appendChild(div_primario)
+                    item_mensaje.append(ul_item);
+                    
+                }
 
-                   
+                else{
+                    var mensaj = (data[index]["text"]);
+                    var timestamp = data[index]["timestamp"]
+                    console.log(timestamp);
+                    var item_mensaje = document.querySelector(".chat-box");
+                    var div_primario =  document.createElement("li");
+                    var div_secundario = document.createElement("li");
+                    var ul_item =  document.querySelector("#msg")
+                    div_primario.classList.add("message");
+                    div_primario.classList.add("secondary")
+                    div_secundario.classList.add("timestamp");
+                    div_primario.append(mensaj);
+                    div_secundario.append(timestamp);
+                    div_primario.appendChild(div_secundario);
+                    ul_item.appendChild(div_primario)
+                    item_mensaje.append(ul_item);
+                }
+                
+            
+       
                 }
         });
 
+        socket.on("UsuarioNo", data, data => {
+            alert(data);
+        } )
 
 
     });

@@ -5,44 +5,97 @@
 {% endblock %}
 
 {% block body %}
-<h3>indicador</h3>
-<div id="sidebar-header">
-   <span class="navbar-brand" id="actual_canal">{{ canal_actual }}</span>
-   <span class="navbar-brand-user" id="actual_user">{{ user_actual }}</span>
-</div>
+<div class="container1">
+   <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">Chat Flack: Es hora de socializar.</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll" aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarScroll">
+          <ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll" style="--bs-scroll-height: 100px;">
+            <li class="nav-item topmargin">
+               <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                  Crear Canal
+                </button> 
+                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        <input type="text"  id="nombre_canal">
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button  id="crearCanal" class="btn btn-primary" data-bs-dismiss="modal" type="button">Crear</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </li>
+            
+            <li class="nav-item dropdown topmargin">
+               <div class="dropdown">
+                  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                    Canales
+                  </button>
+                  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                     <div id="item-canales" class="container"> 
+                     {%for canales in lista_canales%}
+                     <li class="room dropdown-item" value="{{canales}}" id="item-li">{{canales}}</li>
+                    {%endfor%}
+                  </div>
+                  </ul>
+                </div>
+            </li>
+            <li class="nav-item topmargin">
+               <a id="SalirLocal" class="nav-link" href="/logout">Salir</a>      
+            </li>
+          </ul>
+         
+        </div>
+      </div>
+    </nav>
 
-
-<h3 id="actual_canal">Canal actual {{canal}}</h3>
-<input type="text"  id="nombre_canal">
-<button  id="crearCanal" type="submit">Crear</button>
-
-
-<a id="SalirLocal" href="/logout">Salir</a>
-<hr>
-<h3>Enviar mensajes</h3>
-<input type="text" id="mensaje">
-<button id="enviar_mensaje" type="submit">Enviar</button>
-<select  id ="target" value="Emoji"><select>
-
-
-<div id="contenido-mensaje">
-   <ul id="msg" class="MSG1">
-      
-
-   </ul>
-</div>
-
-
-
-<h2>Lista de canales</h2>
-
-<ul>
-   <div id="item-canales" class="container">  
-   {%for canales in lista_canales%}   
-      <li class="room" value="{{canales}}" id="item-li">{{canales}}</li>
-      {%endfor%}
+   <div class="contact-info">
+       <div class="avatar">
+           <img src="https://via.placeholder.com/75" alt="Avatar">
+       </div>
+       <div class="user-info">
+         <span class="navbar-brand" id="actual_canal">{{ canal_actual }}</span>
+         <span class="navbar-brand-user" id="actual_user">{{ user_actual }}</span>
+         
+       </div>
    </div>
-</ul>
+   <!-- <div id="contenido-mensaje2">
+      <ul id="msg" class="MSG1">
+         
+   
+      </ul>
+   </div> -->
+   <div class="chat-box MSG1" id="contenido-mensaje " >
+      <ul id="msg" ></ul>
+       <!-- <div class="message primary">Lorem ipsum dolor sit amet. <div class="timestamp">02:11</div></div>
+       <div class="message secondary">Lorem ipsum dolor sit amet. <div class="timestamp">02:11</div></div>
+       <div class="message primary">Lorem ipsum dolor sit amet. <div class="timestamp">02:11</div></div>
+       <div class="message primary">Lorem ipsum dolor sit amet. <div class="timestamp">02:11</div></div>
+       <div class="message secondary">Lorem ipsum dolor sit amet. <div class="timestamp">02:11</div></div>
+       <div class="message secondary">Lorem ipsum dolor sit amet. <div class="timestamp">02:11</div></div>
+       <div class="message primary">Lorem ipsum dolor sit amet. <div class="timestamp">02:11</div></div>
+       <div class="message primary">Lorem ipsum dolor sit amet. <div class="timestamp">02:11</div></div>
+       <div class="message secondary">Lorem ipsum dolor sit amet. <div class="timestamp">02:11</div></div>
+       <div class="message secondary">Lorem ipsum dolor sit amet. <div class="timestamp">02:11</div></div> -->
+   </div>
+
+   <div class="input-area">
+       <input type="text" name="" id="mensaje">
+       <button id="enviar_mensaje" type="submit"><i class="fas fa-paper-plane">Enviar</i></button>
+       <select  id ="target" value="Emoji"><select>
+   </div>
+</div>
 
 
 {% endblock%}
